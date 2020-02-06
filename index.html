@@ -47,14 +47,17 @@
 <script src="d3.sankey.js" charset="utf-8" type="text/javascript"></script>
 
 <script type="text/javascript">
+    //Source Elijah Meeks's code for d3 sankeys, changed to fit our data and visualization needs
+    //https://bl.ocks.org/emeeks/e749224c89f82788cb18
+    //categorical colors: http://bl.ocks.org/aaizemberg/78bd3dade9593896a59d
 
     var margin = {top: 1, right: 1, bottom: 6, left: 1},
-        width = 1160 - margin.left - margin.right,
+        width = 1000 - margin.left - margin.right,
         height = 700 - margin.top - margin.bottom;
 
     var formatNumber = d3.format(",.0f"),
         format = function(d) { return formatNumber(d) + " TWh"; },
-        color = d3.scale.category20();
+        color = d3.scale.category20c();
 
     var svg = d3.select("svg")
         .attr("width", width + margin.left + margin.right)
@@ -132,7 +135,7 @@
 
         energy.links.forEach(function (link) {
             link.freq = frequencyScale(link.value);
-            link.particleSize = 2;
+            link.particleSize = 3;
             link.particleColor = d3.scale.linear().domain([0,1])
                 .range([link.source.color, link.target.color]);
         })
@@ -152,7 +155,7 @@
                             var offset = (Math.random() - .5) * (d.dy - 4);
                             if (Math.random() < d.freq) {
                                 var length = this.getTotalLength();
-                                particles.push({link: d, time: elapsed, offset: offset, path: this, length: length, animateTime: length, speed: 0.5 + (Math.random())})
+                                particles.push({link: d, time: elapsed, offset: offset, path: this, length: length, animateTime: length, speed: 0.4 + (Math.random())})
                             }
                         }
 
@@ -171,7 +174,7 @@
         function particleEdgeCanvasPath(elapsed) {
             var context = d3.select("canvas").node().getContext("2d")
 
-            context.clearRect(0,0,1000,1000);
+            context.clearRect(0, 0, 1000, 1000);
 
             context.fillStyle = "gray";
             context.lineWidth = "1px";
@@ -182,14 +185,11 @@
                 var currentPos = particles[x].path.getPointAtLength(particles[x].current);
                 context.beginPath();
                 context.fillStyle = particles[x].link.particleColor(0);
-                context.arc(currentPos.x,currentPos.y + particles[x].offset,particles[x].link.particleSize,0,2*Math.PI);
+                context.arc(currentPos.x, currentPos.y + particles[x].offset, particles[x].link.particleSize, 0, 2 * Math.PI);
                 context.fill();
             }
         }
-
-
     });
-
 </script>
 </body>
 </html>
